@@ -1,25 +1,37 @@
 class Dot{
     constructor(map){
+        //map
         this.map = map;
         this.mapRep = this.map.representation;
+        //dot attributes
         this.size = 10;
         this.x = this.map.departure.x + 15;
         this.y = this.map.departure.y + 15;
+        this.availableMoves = [[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1],[-1,-1],[-1,0],[-1,1]];
         this.alive = true;
+        this.arrived = false;
+        //dot representation
         this.color = "green";
         this.representation = document.createElement("span");
+        //AI stuff
+        this.brain = new Brain;
+        this.brain.generateMoves();
     }
 
     move(){
         this.checkBoundries();
         this.checkWalls();
-        if(this.alive){
-            this.x += Math.floor(Math.random() * (21)) -10;
-            this.y += Math.floor(Math.random() * (21)) -10;
+        this.checkDestiny();
+        if(this.brain.step == this.brain.numberSteps){
+            this.alive = false;
+        }
+        if(this.alive && !(this.arrived)){
+            this.x += this.brain.getMove()[0];
+            this.y += this.brain.getMove()[1];
             this.representation.style.top = `${this.y}px`;
             this.representation.style.left = `${this.x}px`;
+            this.brain.step +=1;
         }
-        
     }
     
     checkBoundries(){
@@ -35,6 +47,13 @@ class Dot{
                 this.alive = false;
             }
             
+        }
+    }
+
+    checkDestiny(){
+        const destiny = this.map.destiny;
+        if (this.x > destiny.x && this.x < destiny.x + destiny.width && this.y > destiny.y && this.y < destiny.y + destiny.height){
+            this.arrived = true;
         }
     }
     
