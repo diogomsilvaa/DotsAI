@@ -6,7 +6,7 @@ class Population{
         this.generation = 0;
         this.fitnessSum = 0;
         this.nextGen;
-        this.minSteps = 400;
+        this.minSteps = 1000;
         this.generate(n);
         
     }
@@ -17,12 +17,12 @@ class Population{
         }
     }
 
-    update(goal){
+    update(goal, obs){
         for (let i = 0; i < this.individuals.length; i++) {
             if(this.individuals[i].brain.step > this.minSteps){
                 this.individuals[i].alive = false;
             }
-            this.individuals[i].update(goal); 
+            this.individuals[i].update(goal, obs); 
         }
     }
 
@@ -96,11 +96,13 @@ class Population{
         this.nextGen[0].brain.directions = [...this.bestIndividual.brain.directions];
         let i = 1;
         while(i < this.individuals.length){
-            const offSpring = this.yoBabies(this.getParent(), this.getParent());
-            this.nextGen[i] = offSpring[0];
-            this.nextGen[i+1] = offSpring[1];
-            i+=2;
+            const dot = new Dot;
+            dot.brain.clone(this.getParent().brain);
+            this.nextGen[i] = dot;
+            
+            i++;
         }
+        this.generation++;
     }
     
     mutateTheBoys(){
@@ -120,8 +122,18 @@ class Population{
             }
         }
         this.bestIndividual = this.individuals[bestBoy];
-        this.minSteps = this.individuals[bestBoy].brain.step;
+        if(this.bestIndividual.arrived){
+            this.minSteps = this.bestIndividual.brain.step;
+        }
     }
 
-    
+    numberArrived(){
+        let res =0;
+        for (let i = 0; i < this.individuals.length; i++) {
+            if(this.individuals[i].arrived){
+                res++;
+            }
+        }
+        console.log(res);
+    }
 }

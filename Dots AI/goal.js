@@ -4,7 +4,7 @@ class Goal{
     }
 
     show(){
-        fill(252, 3, 3);
-        rect(this.pos[0], this.pos[1], 5, 5);
+        fill(255, 17, 0);
+        rect(this.pos[0], this.pos[1], 10, 10);
     }
 }
