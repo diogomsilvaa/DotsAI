@@ -21,8 +21,9 @@ class Population{
         for (let i = 0; i < this.individuals.length; i++) {
             if(this.individuals[i].brain.step > this.minSteps){
                 this.individuals[i].alive = false;
+            }else{
+                this.individuals[i].update(goal, obs); 
             }
-            this.individuals[i].update(goal, obs); 
         }
     }
 
@@ -35,7 +36,7 @@ class Population{
 
     allDead(){
         for (let i = 0; i < this.individuals.length; i++) {
-            if (this.individuals[i].alive){
+            if (this.individuals[i].alive && !this.individuals[i].arrived){
                 return false;
             }
         }
@@ -103,6 +104,7 @@ class Population{
             i++;
         }
         this.generation++;
+        UI_updateGen(this.generation);
     }
     
     mutateTheBoys(){

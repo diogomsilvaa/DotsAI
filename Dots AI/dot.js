@@ -21,14 +21,18 @@ class Dot{
     }
 
     move(){
-        this.accel = this.brain.directions[this.brain.step];
-        this.vel[0] += this.accel[0]
-        this.vel[1] += this.accel[1]
-        this.vel[0] = Math.max(Math.min(this.vel[0], 5),-5);
-        this.vel[1] = Math.max(Math.min(this.vel[1], 5),-5);
-        this.pos[0] += this.vel[0];
-        this.pos[1] += this.vel[1];
-        this.brain.step++;
+        if(this.brain.directions.length > this.brain.step){
+            this.accel = this.brain.directions[this.brain.step];
+            this.vel[0] += this.accel[0]
+            this.vel[1] += this.accel[1]
+            this.vel[0] = Math.max(Math.min(this.vel[0], 5),-5);
+            this.vel[1] = Math.max(Math.min(this.vel[1], 5),-5);
+            this.pos[0] += this.vel[0];
+            this.pos[1] += this.vel[1];
+            this.brain.step++;
+        }else{
+            this.alive = false;
+        }
     }
 
     update(goal, obs){
@@ -44,8 +48,7 @@ class Dot{
                     this.obs = true;
                 }
             }
-            if(this.pos[0] <= goal.pos[0] +4 && this.pos[0] > goal.pos[0]  && this.pos[1] <= goal.pos[1] + 4 && this.pos[1] > goal.pos[1] ){
-                this.alive = false;
+            if(this.pos[0] <= goal.pos[0] +10 && this.pos[0] > goal.pos[0]  && this.pos[1] <= goal.pos[1] + 10 && this.pos[1] > goal.pos[1] ){
                 this.arrived = true;
             }
             this.move();
@@ -56,7 +59,7 @@ class Dot{
         if(this.arrive){
             this.fitness =1/16 + 10000/Math.pow(this.brain.step,2);
         }else{
-            let distance = Math.sqrt(Math.pow((goal.pos[0] + 4 - this.pos[0]),2) + Math.pow((goal.pos[1] + 4 - this.pos[1]),2)).toFixed(5);
+            let distance = Math.sqrt(Math.pow((goal.pos[0] + 5 - this.pos[0]),2) + Math.pow((goal.pos[1] + 5 - this.pos[1]),2)).toFixed(5);
             this.fitness = 1/Math.pow((distance),2);
         }
         return this.fitness;
